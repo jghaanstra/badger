@@ -253,17 +253,24 @@ func (p *Badger) getScheme(req *http.Request) string {
 
 func (p *Badger) getClientIP(req *http.Request) *string {
 	ip := req.Header.Get("Cf-Connecting-Ip")
+
+	if ip != "" && strings.Contains(ip, ":") && !strings.Contains(ip, "]") { // If Cf-Connecting-Ip is IPv6 then format it to req.RemoteAddr style so Pangolin can parse it
+		ip = "[" + ip + "]:12345"
+	}
+
 	if ip == "" {
 		ip = req.Header.Get("X-Forwarded-For")
 		if ip != "" {
 			ip = strings.Split(ip, ",")[0] // Use the first IP from the list
-			if strings.Contains(ip, ":") { // If IPv6 format it to req.RemoteAddr style so Pangolin can parse it
+			if strings.Contains(ip, ":") { // If X-Forwarded-For is IPv6 then format it to req.RemoteAddr style so Pangolin can parse it
 				ip = "[" + ip + "]:12345"
 			}
 		}
 	}
+	
 	if ip == "" {
 		ip = req.RemoteAddr
 	}
+
 	return &ip
 }

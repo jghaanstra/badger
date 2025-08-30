@@ -1,0 +1,11 @@
+displayName: Fossorial Badger Patch with IPv6
+type: middleware
+
+import: github.com/jghaanstra/badger
+
+summary: Middleware auth bouncer for Pangolin
+
+testData:
+    apiBaseUrl: "http://localhost:3001/api/v1"
+    userSessionCookieName: "p_session_token"
+    resourceSessionRequestParam: "p_session_request"
